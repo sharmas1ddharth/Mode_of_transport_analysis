@@ -42,7 +42,15 @@ There are total 9 columns in this Dataset
 
 ### Visualizations of the Analysis
 
-<img src="https://github.com/sharmas1ddharth/Mode_of_transport_analysis/blob/main/reports/figures/engineer_age.png">
+<img src="https://github.com/sharmas1ddharth/Mode_of_transport_analysis/blob/main/reports/figures/engineer_age.png" width=400> <img src="https://github.com/sharmas1ddharth/Mode_of_transport_analysis/blob/main/reports/figures/mba_age.png" width=400>
+<img src="https://github.com/sharmas1ddharth/Mode_of_transport_analysis/blob/main/reports/figures/engineer_salary.png" width=400>
+<img src="https://github.com/sharmas1ddharth/Mode_of_transport_analysis/blob/main/reports/figures/mba_salary.png" width=400>
+<img src="https://github.com/sharmas1ddharth/Mode_of_transport_analysis/blob/main/reports/figures/work_exp.png" width=400>
+<img src="https://github.com/sharmas1ddharth/Mode_of_transport_analysis/blob/main/reports/figures/gender_work.png" width=400>
+<img src="https://github.com/sharmas1ddharth/Mode_of_transport_analysis/blob/main/reports/figures/transport_according_to_salary.png" width=400>
+<img src="https://github.com/sharmas1ddharth/Mode_of_transport_analysis/blob/main/reports/figures/age_and_transport.png" width=400>
+<img src="https://github.com/sharmas1ddharth/Mode_of_transport_analysis/blob/main/reports/figures/distamce_preference.png" width=400>
+
 
 <!-- LICENSE -->
 ## License
