@@ -42,6 +42,7 @@ There are total 9 columns in this Dataset
 
 ### Visualizations of the Analysis
 
+<img src="https://github.com/sharmas1ddharth/Mode_of_transport_analysis/blob/main/reports/figures/engineer_age.png">
 
 <!-- LICENSE -->
 ## License
