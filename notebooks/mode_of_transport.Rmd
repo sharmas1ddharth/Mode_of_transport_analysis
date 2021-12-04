@@ -1,0 +1,197 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+cars <- read.csv("mode_of_transport.csv")
+View(cars)
+```
+
+# Structure of the data
+
+```{r}
+str(cars)
+```
+Variables like Engineer, MBA, license contains category values. So, we need to convert them into factors.
+
+```{r}
+cars$Engineer = as.factor(cars$Engineer)
+cars$MBA = as.factor(cars$MBA)
+cars$license = as.factor(cars$license)
+cars$Gender = as.factor(cars$Gender)
+cars$Transport = as.factor(cars$Transport)
+```
+
+# Summary of dataset
+
+```{r}
+summary(cars)
+```
+Here, the minimum age is 18, maximum age is 43 and average age is 27.
+We conclude that the majority is of males of approximately 70-77%.
+Here, there are more Engineers than MBA's.
+And, the most common mode of transport is public transportation.
+
+# Visual Analysis of data
+
+
+
+```{r}
+boxplot(cars$Age ~ cars$Engineer, main="Engineer's Age")
+```
+```{r}
+boxplot(cars$Age ~ cars$MBA, main="MBA's Age")
+```
+There's no much difference in the age of Engineers and MBA's.
+
+Let's find differences in the average salary for two professions.
+
+```{r}
+boxplot(cars$Salary ~ cars$Engineer, main="Engineer's Salary")
+```
+```{r}
+boxplot(cars$Salary ~ cars$MBA, main="MBA's Salary")
+```
+
+There's isn't any major difference in the salary.
+
+Let's see the Work Exp column
+
+```{r}
+hist(cars$Work.Exp, main="Distribution of Work Experience")
+```
+
+This column is right skewed, this is expected as there would be more juniors then seniors in any firm.
+
+```{r}
+boxplot(cars$Work.Exp ~ cars$Gender)
+```
+
+The box plot shows that there is an equal distribution of male and female with no such difference in work experience.
+
+```{r}
+table(cars$license, cars$Transport)
+```
+The table clearly shows that those who don't have license uses public transport more.
+
+```{r}
+boxplot(cars$Salary ~ cars$Transport, main="Mode of transport according to the salary")
+```
+
+Plot clearly shows that as the salary increases the number of individuals with private transport also increases.
+
+Let's see if the age and work experience can be usage of private transport increases
+
+```{r}
+cor(cars$Age, cars$Work.Exp)
+```
+```{r}
+boxplot(cars$Age ~ cars$Transport, main="Age and Transport")
+```
+The plot clearly explains that the higher age prefers private transport.
+
+Let's see with the increase in distance would the employees prefer private or public transport.
+
+```{r}
+boxplot(cars$Distance ~ cars$Transport, main="Preference of transport according to distance")
+```
+
+In this plot the pattern shows that for longer distance private transport is the preference of employees.
+
+Let's see whether female employees prefer private or public transport
+
+```{r}
+table(cars$Gender, cars$Transport)
+```
+From the above data it is visible that more females prefers Public Transport.
+
+Only 40% female uses private transport and only 30% male uses private transport.
+
+# Data Preparations
+
+Let's find if there is any missing values in the data set.
+```{r}
+anyNA(cars)
+```
+
+```{r}
+set.seed(1234)
+pd = sample(2, nrow(cars), replace=TRUE, prob = c(0.7, 0.3))
+carstrain = cars[pd==1,]
+carstest = cars[pd==2,]
+carstest$Salary = log(carstest$Salary)
+carstest$Engineer = as.factor(carstest$Engineer)
+carstest$MBA = as.factor(carstest$MBA)
+carstest$license = as.factor(carstest$license)
+```
+
+
+
+There isn't any missing values in this data set.
+
+## Arrange Test Set
+
+```{r}
+library(caret)
+random <- createDataPartition(cars$Transport, p=0.70, list=FALSE)
+
+train_set = cars[random,]
+test_set = cars[-random,]
+```
+
+# Model Building
+
+## Naive Bayes
+
+```{r}
+library(e1071)
+nb_model <- naiveBayes(train_set$Transport ~ ., data = train_set)
+
+nb_model
+```
+```{r}
+nb_predictions <- predict(nb_model, test_set)
+table(nb_predictions, test_set$Transport)
+```
+## Logistic Regression
+
+```{r}
+logistic_model <- glm(Transport~., data = train_set, family = binomial(link = "logit"))
+test_set$log.pred <- predict(logistic_model, test_set[1:8], type="response")
+
+table(test_set$Transport, test_set$log.pred>0.5)
+```
+
+# KNN
+
+```{r}
+trControl <- trainControl(method = "cv", number = 10)
+fit.knn <- train(Transport ~ ., method = "knn",
+                 tuneGrid = expand.grid(k=2:20),
+                 trControl=trControl,
+                 metric = "Accuracy",
+                 preProcess = c("center", "scale"),
+                 data = train_set)
+fit.knn
+```
+```{r}
+knn_pred_train <- predict(fit.knn, train_set)
+
+table(knn_pred_train, train_set$Transport)
+```
+```{r}
+knn_pred_test <- predict(fit.knn, test_set)
+table(knn_pred_test, test_set$Transport)
+```
+```{r}
+predict(fit.knn, carstest)
+```
+# Conclusion
+
+- Important variables are Age, Work Exp, Distance and License
+- Age and Work Exp are highly correlated
+- Employees with work exp more than 10 years and above are likely to use private transport
+- Employees who must commute for distance greater than 12 are more likely to use private transport
+- People with higher salaries greater than 20k are most likely to use private transportation
+- With license, we do see that 81% who commute through private transportation have license and 89% commute through public transport
