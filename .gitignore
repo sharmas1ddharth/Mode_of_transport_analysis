@@ -7,6 +7,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+rsconnect/
 env/
 build/
 develop-eggs/
